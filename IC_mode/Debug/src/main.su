@@ -1,0 +1,5 @@
+core_cm4.h:1452:22:NVIC_EnableIRQ	16	static
+main.c:33:6:configureGPIOA6	4	static
+main.c:45:6:TIM3_IC_Init	8	static
+main.c:69:6:TIM3_IRQHandler	16	static
+main.c:98:5:main	8	static

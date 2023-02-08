@@ -1,0 +1,4 @@
+UART.c:14:6:configureUART	4	static
+UART.c:56:6:sendByteUART	16	static
+UART.c:63:6:sendStringUART	24	static
+UART.c:73:6:UART4_IRQHandler	16	static
