@@ -27,6 +27,115 @@ float frequency = 0;
 int buffer[ARRAY_SIZE];
 int i = 0;
 
+
+void TIM4_CH1_PWM_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+	TIM4->PSC = 268 - 1;
+	TIM4->ARR = 100 -1;
+	TIM4->CCMR1 &= ~TIM_CCMR1_OC1M;
+	TIM4->CCMR1 |= TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1;
+	TIM4->CCMR1 |= TIM_CCMR1_OC1PE;
+	TIM4->CCER |= TIM_CCER_CC1E;
+	TIM4->CR1 |= TIM_CR1_CEN;
+}
+
+void configureGPIOB6(){
+
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+
+	GPIOC->MODER &= ~GPIO_MODER_MODER6;
+	GPIOC->MODER |= (GPIO_MODER_MODER6_1);
+	GPIOC->AFR[0] |= (2 << 24);
+	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_6;
+}
+
+void TIM4_CH2_PWM_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+	// Set prescaler to 268
+	TIM4->PSC = 268 - 1;
+	// Set auto-reload value to 100
+	TIM4->ARR = 100 - 1;
+	// Enable PWM mode 1 on channel 2
+	TIM4->CCMR1 &= ~TIM_CCMR1_OC2M;
+	TIM4->CCMR1 |= (TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1);
+	// Enable preload register on channel 2
+	TIM4->CCMR1 |= TIM_CCMR1_OC2PE;
+	// Enable capture/compare channel 2
+	TIM4->CCER |= TIM_CCER_CC2E;
+	// Enable counter
+	TIM4->CR1 |= TIM_CR1_CEN;
+}
+
+void configureGPIOB7(){
+
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+
+	GPIOC->MODER &= ~GPIO_MODER_MODER7;
+	GPIOC->MODER |= (GPIO_MODER_MODER7_1);
+	GPIOC->AFR[0] |= (2 << 24);
+	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_7;
+}
+
+void TIM4_CH3_PWM_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+	// Set prescaler to 268
+	TIM4->PSC = 268 - 1;
+	// Set auto-reload value to 100
+	TIM4->ARR = 100 -1;
+
+	// Enable PWM mode 1 on channel 3
+	TIM4->CCMR2 &= ~TIM_CCMR2_OC3M;
+	TIM4->CCMR2 |= (TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_1);
+	// Enable preload register on channel 3
+	TIM4->CCMR2 |= TIM_CCMR2_OC3PE;
+
+	// Enable capture/compare channel 3
+	TIM4->CCER |= TIM_CCER_CC3E;
+	// Enable counter
+	TIM4->CR1 |= TIM_CR1_CEN;
+}
+
+void configureGPIOB8(){
+
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+
+	GPIOC->MODER &= ~GPIO_MODER_MODER8;
+	GPIOC->MODER |= (GPIO_MODER_MODER8_1);
+	GPIOC->AFR[0] |= (2 << 24);
+	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_8;
+}
+
+void TIM4_CH4_PWM_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+	// Set prescaler to 268
+	TIM4->PSC = 268 - 1;
+	// Set auto-reload value to 100
+	TIM4->ARR = 100 - 1;
+	// Enable PWM mode 1 on channel 4
+	TIM4->CCMR2 &= ~TIM_CCMR2_OC4M;
+	TIM4->CCMR2 |= (TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4M_1);
+	// Enable preload register on channel 4
+	TIM4->CCMR2 |= TIM_CCMR2_OC4PE;
+	// Enable capture/compare channel 4
+	TIM4->CCER |= TIM_CCER_CC4E;
+	// Enable counter
+	TIM4->CR1 |= TIM_CR1_CEN;
+}
+
+void configureGPIOB9(){
+
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
+
+	GPIOC->MODER &= ~GPIO_MODER_MODER9;
+	GPIOC->MODER |= (GPIO_MODER_MODER9_1);
+	GPIOC->AFR[0] |= (2 << 24);
+	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_9;
+}
+
 void TIM5_CH1_IC_Init(){
 
 	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
@@ -353,8 +462,33 @@ int main(void)
   TIM5_CH4_IC_Init();
   configureGPIOA3(); //AF2 Alternate function
 
+  TIM4_CH1_PWM_Init();
+  configureGPIOB6();
+
+  TIM4_CH2_PWM_Init();
+  configureGPIOB7();
+
+  TIM4_CH3_PWM_Init();
+  configureGPIOB8();
+
+  TIM4_CH4_PWM_Init();
+  configureGPIOB9();
 
 
-  while (1);
+
+  while (1){
+
+	  // Set capture compare value 1 to 50
+	  TIM4->CCR1 = 50;
+
+	  // Set capture compare value 4 to 50
+	  TIM4->CCR4 = 50;
+
+	  // Set capture compare value 3 to 50
+	  TIM4->CCR3 = 50;
+
+	  // Set capture compare value 2 to 50
+	  TIM4->CCR2 = 50;
+  }
 }
 
