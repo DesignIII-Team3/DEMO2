@@ -27,9 +27,137 @@ float frequency = 0;
 int buffer[ARRAY_SIZE];
 int i = 0;
 
+void TIM5_CH1_IC_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
 
 
-// Function to configure the GPIOA pin6
+	TIM5->CCMR1 &= ~TIM_CCMR1_CC1S;
+	TIM5->CCMR1 |= TIM_CCMR1_CC1S_0;
+	TIM5->CCER &= ~TIM_CCER_CC1P;
+	TIM5->CCER |= TIM_CCER_CC1E;
+	TIM5->CCMR1 &= ~(BIT7 | BIT5 | BIT4);
+	TIM5->CCMR1 |= (BIT6);
+	TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
+	TIM5->PSC = 26 - 1;
+	TIM5->DIER |= TIM_DIER_CC1IE;
+
+
+	NVIC_EnableIRQ(TIM5_IRQn);
+
+
+	TIM5->CR1 |= TIM_CR1_CEN;
+
+}
+
+
+void configureGPIOA0(){
+	//AF2 Alternate function
+
+	// Enable clock for GPIOA
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// Configure PA6 as alternate function
+	GPIOA->MODER &= ~GPIO_MODER_MODER0;
+	GPIOA->MODER |= GPIO_MODER_MODER0_1;
+	GPIOA->AFR[0] |= 0x2 << 24;
+}
+
+void TIM5_CH2_IC_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+
+	TIM5->CCMR1 &= ~TIM_CCMR1_CC2S;
+	TIM5->CCMR1 |= TIM_CCMR1_CC2S_0;
+	TIM5->CCER &= ~TIM_CCER_CC2P;
+	TIM5->CCER |= TIM_CCER_CC2E;
+	TIM5->CCMR1 &= ~(BIT15 | BIT13 | BIT12);
+	TIM5->CCMR1 |= (BIT14);
+	//TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
+	TIM5->PSC = 26 - 1;
+	TIM5->DIER |= TIM_DIER_CC2IE;
+
+	NVIC_EnableIRQ(TIM5_IRQn);
+
+	TIM5->CR1 |= TIM_CR1_CEN;
+
+}
+
+void configureGPIOA1(){
+	//AF2 Alternate function
+
+	// Enable clock for GPIOA
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// Configure PA6 as alternate function
+	GPIOA->MODER &= ~GPIO_MODER_MODER1;
+	GPIOA->MODER |= GPIO_MODER_MODER1_1;
+	GPIOA->AFR[0] |= 0x2 << 24;
+}
+
+void TIM5_CH3_IC_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+
+	TIM5->CCMR2 &= ~TIM_CCMR2_CC3S;
+	TIM5->CCMR2 |= TIM_CCMR2_CC3S_0;
+	TIM5->CCER &= ~TIM_CCER_CC3P;
+	TIM5->CCER |= TIM_CCER_CC3E;
+	TIM5->CCMR2 &= ~(BIT7 | BIT5 | BIT4);
+	TIM5->CCMR2 |= (BIT6);
+	//TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
+	TIM5->PSC = 26 - 1;
+	TIM5->DIER |= TIM_DIER_CC3IE;
+
+	NVIC_EnableIRQ(TIM5_IRQn);
+
+	TIM5->CR1 |= TIM_CR1_CEN;
+}
+
+void configureGPIOA2(){
+	//AF2 Alternate function
+
+	// Enable clock for GPIOA
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// Configure PA6 as alternate function
+	GPIOA->MODER &= ~GPIO_MODER_MODER2;
+	GPIOA->MODER |= GPIO_MODER_MODER2_1;
+	GPIOA->AFR[0] |= 0x2 << 24;
+}
+
+void TIM5_CH4_IC_Init(){
+
+	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+
+	TIM5->CCMR2 &= ~TIM_CCMR2_CC4S;
+	TIM5->CCMR2 |= TIM_CCMR2_CC4S_0;
+	TIM5->CCER &= ~TIM_CCER_CC4P;
+	TIM5->CCER |= TIM_CCER_CC4E;
+	TIM5->CCMR2 &= ~(BIT15 | BIT13 | BIT12);
+	TIM5->CCMR2 |= (BIT14);
+	//TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
+	TIM5->PSC = 26 - 1;
+	TIM5->DIER |= TIM_DIER_CC4IE;
+
+	NVIC_EnableIRQ(TIM5_IRQn);
+
+	TIM5->CR1 |= TIM_CR1_CEN;
+
+}
+void configureGPIOA3(){
+	//AF2 Alternate function
+
+	// Enable clock for GPIOA
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// Configure PA6 as alternate function
+	GPIOA->MODER &= ~GPIO_MODER_MODER3;
+	GPIOA->MODER |= GPIO_MODER_MODER3_1;
+	GPIOA->AFR[0] |= 0x2 << 24;
+}
+
+
 void configureGPIOA6(void)
 {
 	// Enable clock for GPIOA
@@ -42,7 +170,7 @@ void configureGPIOA6(void)
 }
 
 // Function to configure the timer
-void TIM3_IC_Init(void)
+void TIM3_CH1_IC_Init(void)
 {
 	// Enable clock for TIM3
 	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -66,7 +194,7 @@ void TIM3_IC_Init(void)
 }
 
 
-void TIM3_IRQHandler(void)
+void TIM3_CH1_IRQHandler(void)
 {
 
   if (TIM3->SR & TIM_SR_CC1IF)
@@ -95,19 +223,138 @@ void TIM3_IRQHandler(void)
 }
 
 
-int main(void)
+void TIM5_CH1_IRQHandler(void)
 {
 
-  // Configure the GPIO pin
+  if (TIM5->SR & TIM_SR_CC1IF)
+  {
+	  if(Is_First_Captured == 0){
+		  IC_Val1 = TIM5->CCR1;
+		  Is_First_Captured = 1;
+	  }
+	  else{
+		  IC_Val2 = TIM5->CCR1;
+		  if(IC_Val2 > IC_Val1){
+			  Difference = IC_Val2 - IC_Val1;
+		  }
+		  else if(IC_Val1 > IC_Val2){
+			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+
+		  }
+		  float refClock = TIMCLOCK /(PRESCALAR);
+		  frequency = refClock/Difference;
+		  buffer[i++] = frequency;
+		  while(i > ARRAY_SIZE);
+		  TIM5->SR &= ~TIM_SR_CC1IF;
+		  Is_First_Captured = 0;
+	  }
+  }
+}
+
+void TIM5_CH2_IRQHandler(void)
+{
+
+  if (TIM5->SR & TIM_SR_CC2IF)
+  {
+	  if(Is_First_Captured == 0){
+		  IC_Val1 = TIM5->CCR2;
+		  Is_First_Captured = 1;
+	  }
+	  else{
+		  IC_Val2 = TIM5->CCR2;
+		  if(IC_Val2 > IC_Val1){
+			  Difference = IC_Val2 - IC_Val1;
+		  }
+		  else if(IC_Val1 > IC_Val2){
+			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+
+		  }
+		  float refClock = TIMCLOCK /(PRESCALAR);
+		  frequency = refClock/Difference;
+		  buffer[i++] = frequency;
+		  while(i > ARRAY_SIZE);
+		  TIM5->SR &= ~TIM_SR_CC2IF;
+		  Is_First_Captured = 0;
+	  }
+  }
+}
+
+void TIM5_CH3_IRQHandler(void)
+{
+
+  if (TIM5->SR & TIM_SR_CC3IF)
+  {
+	  if(Is_First_Captured == 0){
+		  IC_Val1 = TIM5->CCR3;
+		  Is_First_Captured = 1;
+	  }
+	  else{
+		  IC_Val2 = TIM5->CCR3;
+		  if(IC_Val2 > IC_Val1){
+			  Difference = IC_Val2 - IC_Val1;
+		  }
+		  else if(IC_Val1 > IC_Val2){
+			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+
+		  }
+		  float refClock = TIMCLOCK /(PRESCALAR);
+		  frequency = refClock/Difference;
+		  buffer[i++] = frequency;
+		  while(i > ARRAY_SIZE);
+		  TIM5->SR &= ~TIM_SR_CC3IF;
+		  Is_First_Captured = 0;
+	  }
+  }
+}
+
+void TIM5_CH4_IRQHandler(void)
+{
+
+  if (TIM5->SR & TIM_SR_CC4IF)
+  {
+	  if(Is_First_Captured == 0){
+		  IC_Val1 = TIM5->CCR4;
+		  Is_First_Captured = 1;
+	  }
+	  else{
+		  IC_Val2 = TIM5->CCR4;
+		  if(IC_Val2 > IC_Val1){
+			  Difference = IC_Val2 - IC_Val1;
+		  }
+		  else if(IC_Val1 > IC_Val2){
+			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+
+		  }
+		  float refClock = TIMCLOCK /(PRESCALAR);
+		  frequency = refClock/Difference;
+		  buffer[i++] = frequency;
+		  while(i > ARRAY_SIZE);
+		  TIM5->SR &= ~TIM_SR_CC4IF;
+		  Is_First_Captured = 0;
+	  }
+  }
+}
+
+
+int main(void)
+{
+  TIM3_CH1_IC_Init();
   configureGPIOA6();
 
-  // Configure the timer
-  TIM3_IC_Init();
+  TIM5_CH1_IC_Init();
+  configureGPIOA0(); //AF2 Alternate function
 
-  configureUART();
+  TIM5_CH2_IC_Init();
+  configureGPIOA1(); //AF2 Alternate function
 
-  while (1){
-	  TIM3->CCR4 = 50;
-  }
+  TIM5_CH3_IC_Init();
+  configureGPIOA2(); //AF2 Alternate function
+
+  TIM5_CH4_IC_Init();
+  configureGPIOA3(); //AF2 Alternate function
+
+
+
+  while (1);
 }
 
