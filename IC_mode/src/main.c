@@ -303,7 +303,7 @@ void TIM3_CH1_IC_Init(void)
 }
 
 
-void TIM3_CH1_IRQHandler(void)
+void TIM3_IRQHandler(void)
 {
 
   if (TIM3->SR & TIM_SR_CC1IF)
@@ -330,7 +330,12 @@ void TIM3_CH1_IRQHandler(void)
 	  }
   }
 }
-
+void TIM5_IRQHandler(void){
+	TIM5_CH1_IRQHandler();
+	TIM5_CH2_IRQHandler();
+	TIM5_CH3_IRQHandler();
+	TIM5_CH4_IRQHandler();
+}
 
 void TIM5_CH1_IRQHandler(void)
 {
