@@ -22,15 +22,51 @@ uint32_t Difference = 0;
 int Is_First_Captured = 0;
 float frequency = 0;
 
+uint32_t CH1_IC_Val1 = 0;
+uint32_t CH1_IC_Val2 = 0;
+uint32_t CH1_Difference = 0;
+int CH1_Is_First_Captured = 0;
+float CH1_frequency = 0;
+
+uint32_t CH2_IC_Val1 = 0;
+uint32_t CH2_IC_Val2 = 0;
+uint32_t CH2_Difference = 0;
+int CH2_Is_First_Captured = 0;
+float CH2_frequency = 0;
+
+uint32_t CH3_IC_Val1 = 0;
+uint32_t CH3_IC_Val2 = 0;
+uint32_t CH3_Difference = 0;
+int CH3_Is_First_Captured = 0;
+float CH3_frequency = 0;
+
+uint32_t CH4_IC_Val1 = 0;
+uint32_t CH4_IC_Val2 = 0;
+uint32_t CH4_Difference = 0;
+int CH4_Is_First_Captured = 0;
+float CH4_frequency = 0;
+
 
 #define ARRAY_SIZE 300
-int buffer[ARRAY_SIZE];
+float buffer[ARRAY_SIZE];
 int i = 0;
+
+int CH1_buffer[ARRAY_SIZE];
+int CH1_i = 0;
+
+int CH2_buffer[ARRAY_SIZE];
+int CH2_i = 0;
+
+int CH3_buffer[ARRAY_SIZE];
+int CH3_i = 0;
+
+int CH4_buffer[ARRAY_SIZE];
+int CH4_i = 0;
 
 
 void TIM4_CH1_PWM_Init(){
 
-	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+	RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
 	TIM4->PSC = 268 - 1;
 	TIM4->ARR = 100 -1;
 	TIM4->CCMR1 &= ~TIM_CCMR1_OC1M;
@@ -44,10 +80,10 @@ void configureGPIOB6(){
 
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-	GPIOC->MODER &= ~GPIO_MODER_MODER6;
-	GPIOC->MODER |= (GPIO_MODER_MODER6_1);
-	GPIOC->AFR[0] |= (2 << 24);
-	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_6;
+	GPIOB->MODER &= ~GPIO_MODER_MODER6;
+	GPIOB->MODER |= (GPIO_MODER_MODER6_1);
+	GPIOB->AFR[0] |= (2 << 24);
+	GPIOB->OTYPER &= ~GPIO_OTYPER_OT_6;
 }
 
 void TIM4_CH2_PWM_Init(){
@@ -72,10 +108,10 @@ void configureGPIOB7(){
 
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-	GPIOC->MODER &= ~GPIO_MODER_MODER7;
-	GPIOC->MODER |= (GPIO_MODER_MODER7_1);
-	GPIOC->AFR[0] |= (2 << 24);
-	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_7;
+	GPIOB->MODER &= ~GPIO_MODER_MODER7;
+	GPIOB->MODER |= (GPIO_MODER_MODER7_1);
+	GPIOB->AFR[0] |= (2 << 28);
+	GPIOB->OTYPER &= ~GPIO_OTYPER_OT_7;
 }
 
 void TIM4_CH3_PWM_Init(){
@@ -102,10 +138,10 @@ void configureGPIOB8(){
 
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-	GPIOC->MODER &= ~GPIO_MODER_MODER8;
-	GPIOC->MODER |= (GPIO_MODER_MODER8_1);
-	GPIOC->AFR[0] |= (2 << 24);
-	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_8;
+	GPIOB->MODER &= ~GPIO_MODER_MODER8;
+	GPIOB->MODER |= (GPIO_MODER_MODER8_1);
+	GPIOB->AFR[1] |= (2 << 0);
+	GPIOB->OTYPER &= ~GPIO_OTYPER_OT_8;
 }
 
 void TIM4_CH4_PWM_Init(){
@@ -130,10 +166,10 @@ void configureGPIOB9(){
 
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
 
-	GPIOC->MODER &= ~GPIO_MODER_MODER9;
-	GPIOC->MODER |= (GPIO_MODER_MODER9_1);
-	GPIOC->AFR[0] |= (2 << 24);
-	GPIOC->OTYPER &= ~GPIO_OTYPER_OT_9;
+	GPIOB->MODER &= ~GPIO_MODER_MODER9;
+	GPIOB->MODER |= (GPIO_MODER_MODER9_1);
+	GPIOB->AFR[1] |= (2 << 4);
+	GPIOB->OTYPER &= ~GPIO_OTYPER_OT_9;
 }
 
 void TIM5_CH1_IC_Init(){
@@ -147,8 +183,8 @@ void TIM5_CH1_IC_Init(){
 	TIM5->CCER |= TIM_CCER_CC1E;
 	TIM5->CCMR1 &= ~(BIT7 | BIT5 | BIT4);
 	TIM5->CCMR1 |= (BIT6);
-	TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
-	TIM5->PSC = 26 - 1;
+	//TIM5->CCMR1 &= ~TIM_CCMR1_IC1F;
+	TIM5->PSC = 26880 - 1;
 	TIM5->DIER |= TIM_DIER_CC1IE;
 
 
@@ -169,7 +205,7 @@ void configureGPIOA0(){
 	// Configure PA6 as alternate function
 	GPIOA->MODER &= ~GPIO_MODER_MODER0;
 	GPIOA->MODER |= GPIO_MODER_MODER0_1;
-	GPIOA->AFR[0] |= 0x2 << 24;
+	GPIOA->AFR[0] |= (2 << 0);
 }
 
 void TIM5_CH2_IC_Init(){
@@ -201,7 +237,7 @@ void configureGPIOA1(){
 	// Configure PA6 as alternate function
 	GPIOA->MODER &= ~GPIO_MODER_MODER1;
 	GPIOA->MODER |= GPIO_MODER_MODER1_1;
-	GPIOA->AFR[0] |= 0x2 << 24;
+	GPIOA->AFR[0] |= (2 << 4);
 }
 
 void TIM5_CH3_IC_Init(){
@@ -232,7 +268,7 @@ void configureGPIOA2(){
 	// Configure PA6 as alternate function
 	GPIOA->MODER &= ~GPIO_MODER_MODER2;
 	GPIOA->MODER |= GPIO_MODER_MODER2_1;
-	GPIOA->AFR[0] |= 0x2 << 24;
+	GPIOA->AFR[0] |= (2 << 8);
 }
 
 void TIM5_CH4_IC_Init(){
@@ -263,7 +299,7 @@ void configureGPIOA3(){
 	// Configure PA6 as alternate function
 	GPIOA->MODER &= ~GPIO_MODER_MODER3;
 	GPIOA->MODER |= GPIO_MODER_MODER3_1;
-	GPIOA->AFR[0] |= 0x2 << 24;
+	GPIOA->AFR[0] |= (2 << 12);
 }
 
 
@@ -278,22 +314,40 @@ void configureGPIOA6(void)
 	GPIOA->AFR[0] |= 0x2 << 24;
 }
 
+void configureGPIOA7(void)
+{
+	// Enable clock for GPIOA
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+	// Configure PA6 as alternate function
+	GPIOA->MODER &= ~GPIO_MODER_MODER7;
+	GPIOA->MODER |= GPIO_MODER_MODER7_1;
+	GPIOA->AFR[0] |= 0x2 << 28;
+}
+
 // Function to configure the timer
-void TIM3_CH1_IC_Init(void)
+void TIM3_CH1_CH2_IC_Init(void)
 {
 	// Enable clock for TIM3
 	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
 
-	// Configure TIM3 in input capture mode
+	// Configure TIM3_CH1 in input capture mode
 	TIM3->CCMR1 &= ~TIM_CCMR1_CC1S;
 	TIM3->CCMR1 |= TIM_CCMR1_CC1S_0;
 	TIM3->CCER &= ~TIM_CCER_CC1P;
 	TIM3->CCER |= TIM_CCER_CC1E;
-	TIM3->CCMR1 &= ~(BIT7 | BIT5 | BIT4);
-	TIM3->CCMR1 |= (BIT6);
 	TIM3->CCMR1 &= ~TIM_CCMR1_IC1F;
+
+	// Configure TIM3_CH2 in input capture mode
+	TIM3->CCMR1 &= ~TIM_CCMR1_CC2S;
+	TIM3->CCMR1 |= TIM_CCMR1_CC2S_0;
+	TIM3->CCER &= ~TIM_CCER_CC2P;
+	TIM3->CCER |= TIM_CCER_CC2E;
+	TIM3->CCMR1 &= ~TIM_CCMR1_IC2F;
+
 	TIM3->PSC = 26 - 1;
-	TIM3->DIER |= TIM_DIER_CC1IE;
+	TIM3->DIER |= (TIM_DIER_CC1IE | TIM_DIER_CC2IE);
+
 
 	// Enable TIM3 global interrupt
 	NVIC_EnableIRQ(TIM3_IRQn);
@@ -305,155 +359,161 @@ void TIM3_CH1_IC_Init(void)
 
 void TIM3_IRQHandler(void)
 {
+	if (TIM3->SR & TIM_SR_CC2IF)
+	{
+
+		if(CH2_Is_First_Captured == 0){
+			CH2_IC_Val1 = TIM3->CCR2;
+			CH2_Is_First_Captured = 1;
+		}
+		else{
+			CH2_IC_Val2 = TIM3->CCR2;
+			if(CH2_IC_Val2 > CH2_IC_Val1){
+				CH2_Difference = CH2_IC_Val2 - CH2_IC_Val1;
+			}
+			else if(CH2_IC_Val1 > CH2_IC_Val2){
+				CH2_Difference = (0xFFFF - CH2_IC_Val1) + CH2_IC_Val2;
+
+			}
+			float refClock = TIMCLOCK /(PRESCALAR);
+			CH2_frequency = refClock/CH2_Difference;
+			CH2_buffer[CH2_i++] = CH2_frequency;
+			while(CH2_i > ARRAY_SIZE);
+			TIM3->SR &= ~TIM_SR_CC2IF;
+			CH2_Is_First_Captured = 0;
+		}
+	}
+
 
   if (TIM3->SR & TIM_SR_CC1IF)
   {
-	  if(Is_First_Captured == 0){
-		  IC_Val1 = TIM3->CCR1;
-		  Is_First_Captured = 1;
+	  if(CH1_Is_First_Captured == 0){
+		  CH1_IC_Val1 = TIM3->CCR1;
+		  CH1_Is_First_Captured = 1;
 	  }
 	  else{
-		  IC_Val2 = TIM3->CCR1;
-		  if(IC_Val2 > IC_Val1){
-			  Difference = IC_Val2 - IC_Val1;
+		  CH1_IC_Val2 = TIM3->CCR1;
+		  if(CH1_IC_Val2 > CH1_IC_Val1){
+			  CH1_Difference = CH1_IC_Val2 - CH1_IC_Val1;
 		  }
 		  else if(IC_Val1 > IC_Val2){
-			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+			  CH1_Difference = (0xFFFF - CH1_IC_Val1) + CH1_IC_Val2;
 
 		  }
 		  float refClock = TIMCLOCK /(PRESCALAR);
-		  frequency = refClock/Difference;
-		  buffer[i++] = frequency;
+		  CH1_frequency = refClock/CH1_Difference;
+		  CH1_buffer[i++] = CH1_frequency;
 		  while(i > ARRAY_SIZE);
 		  TIM3->SR &= ~TIM_SR_CC1IF;
 		  Is_First_Captured = 0;
 	  }
   }
+
+
 }
 void TIM5_IRQHandler(void){
-	TIM5_CH1_IRQHandler();
-	TIM5_CH2_IRQHandler();
-	TIM5_CH3_IRQHandler();
-	TIM5_CH4_IRQHandler();
-}
 
-void TIM5_CH1_IRQHandler(void)
-{
+	if (TIM5->SR & TIM_SR_CC1IF)
+	{
 
-  if (TIM5->SR & TIM_SR_CC1IF)
-  {
-	  if(Is_First_Captured == 0){
-		  IC_Val1 = TIM5->CCR1;
-		  Is_First_Captured = 1;
-	  }
-	  else{
-		  IC_Val2 = TIM5->CCR1;
-		  if(IC_Val2 > IC_Val1){
-			  Difference = IC_Val2 - IC_Val1;
-		  }
-		  else if(IC_Val1 > IC_Val2){
-			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
+		if(CH1_Is_First_Captured == 0){
+			CH1_IC_Val1 = TIM5->CCR1;
+			CH1_Is_First_Captured = 1;
+		}
+		else{
+			CH1_IC_Val2 = TIM5->CCR1;
+			if(CH1_IC_Val2 > CH1_IC_Val1){
+				CH1_Difference = CH1_IC_Val2 - CH1_IC_Val1;
+			}
+			else if(CH1_IC_Val1 > CH1_IC_Val2){
+				CH1_Difference = (0xFFFFFFFF - CH1_IC_Val1) + CH1_IC_Val2;
+			}
+			float refClock = TIMCLOCK /(PRESCALAR);
+			CH1_frequency = 26 * refClock/CH1_Difference;
+			CH1_buffer[CH1_i++] = CH1_frequency;
+			while(CH1_i > ARRAY_SIZE);
+			TIM5->SR &= ~TIM_SR_CC1IF;
+			CH1_Is_First_Captured = 0;
+		}
+	}
+	if (TIM5->SR & TIM_SR_CC2IF)
+	{
+		if(CH2_Is_First_Captured == 0){
+			CH2_IC_Val1 = TIM5->CCR2;
+			CH2_Is_First_Captured = 1;
+		}
+		else{
+			CH2_IC_Val2 = TIM5->CCR2;
+			if(CH2_IC_Val2 > CH2_IC_Val1){
+				CH2_Difference = CH2_IC_Val2 - CH2_IC_Val1;
+			}
+			else if(IC_Val1 > IC_Val2){
+				CH2_Difference = (0xFFFFFFFF - CH2_IC_Val1) + CH2_IC_Val2;
 
-		  }
-		  float refClock = TIMCLOCK /(PRESCALAR);
-		  frequency = refClock/Difference;
-		  buffer[i++] = frequency;
-		  while(i > ARRAY_SIZE);
-		  TIM5->SR &= ~TIM_SR_CC1IF;
-		  Is_First_Captured = 0;
-	  }
-  }
-}
+			}
+			float refClock = TIMCLOCK /(PRESCALAR);
+			CH2_frequency = 26 * refClock/Difference;
+			CH2_buffer[CH2_i++] = CH2_frequency;
+			while(CH2_i > ARRAY_SIZE);
+			TIM5->SR &= ~TIM_SR_CC2IF;
+			CH2_Is_First_Captured = 0;
+		}
+	}
+	if (TIM5->SR & TIM_SR_CC3IF)
+	{
+		if(Is_First_Captured == 0){
+			IC_Val1 = TIM5->CCR3;
+			Is_First_Captured = 1;
+		}
+		else{
+			IC_Val2 = TIM5->CCR3;
+			if(IC_Val2 > IC_Val1){
+				Difference = IC_Val2 - IC_Val1;
+			}
+			else if(IC_Val1 > IC_Val2){
+				Difference = (0xFFFFFFFF - IC_Val1) + IC_Val2;
 
-void TIM5_CH2_IRQHandler(void)
-{
+			}
+			float refClock = TIMCLOCK /(PRESCALAR);
+			frequency = 26 * refClock/Difference;
+			buffer[i++] = frequency;
+			while(i > ARRAY_SIZE);
+			TIM5->SR &= ~TIM_SR_CC3IF;
+			Is_First_Captured = 0;
+		}
+	}
+	if (TIM5->SR & TIM_SR_CC4IF)
+	{
+		if(Is_First_Captured == 0){
+			IC_Val1 = TIM5->CCR4;
+			Is_First_Captured = 1;
+		}
+		else{
+			IC_Val2 = TIM5->CCR4;
+			if(IC_Val2 > IC_Val1){
+				Difference = IC_Val2 - IC_Val1;
+			}
+			else if(IC_Val1 > IC_Val2){
+				Difference = (0xFFFFFFFF - IC_Val1) + IC_Val2;
 
-  if (TIM5->SR & TIM_SR_CC2IF)
-  {
-	  if(Is_First_Captured == 0){
-		  IC_Val1 = TIM5->CCR2;
-		  Is_First_Captured = 1;
-	  }
-	  else{
-		  IC_Val2 = TIM5->CCR2;
-		  if(IC_Val2 > IC_Val1){
-			  Difference = IC_Val2 - IC_Val1;
-		  }
-		  else if(IC_Val1 > IC_Val2){
-			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
-
-		  }
-		  float refClock = TIMCLOCK /(PRESCALAR);
-		  frequency = refClock/Difference;
-		  buffer[i++] = frequency;
-		  while(i > ARRAY_SIZE);
-		  TIM5->SR &= ~TIM_SR_CC2IF;
-		  Is_First_Captured = 0;
-	  }
-  }
-}
-
-void TIM5_CH3_IRQHandler(void)
-{
-
-  if (TIM5->SR & TIM_SR_CC3IF)
-  {
-	  if(Is_First_Captured == 0){
-		  IC_Val1 = TIM5->CCR3;
-		  Is_First_Captured = 1;
-	  }
-	  else{
-		  IC_Val2 = TIM5->CCR3;
-		  if(IC_Val2 > IC_Val1){
-			  Difference = IC_Val2 - IC_Val1;
-		  }
-		  else if(IC_Val1 > IC_Val2){
-			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
-
-		  }
-		  float refClock = TIMCLOCK /(PRESCALAR);
-		  frequency = refClock/Difference;
-		  buffer[i++] = frequency;
-		  while(i > ARRAY_SIZE);
-		  TIM5->SR &= ~TIM_SR_CC3IF;
-		  Is_First_Captured = 0;
-	  }
-  }
-}
-
-void TIM5_CH4_IRQHandler(void)
-{
-
-  if (TIM5->SR & TIM_SR_CC4IF)
-  {
-	  if(Is_First_Captured == 0){
-		  IC_Val1 = TIM5->CCR4;
-		  Is_First_Captured = 1;
-	  }
-	  else{
-		  IC_Val2 = TIM5->CCR4;
-		  if(IC_Val2 > IC_Val1){
-			  Difference = IC_Val2 - IC_Val1;
-		  }
-		  else if(IC_Val1 > IC_Val2){
-			  Difference = (0xFFFF - IC_Val1) + IC_Val2;
-
-		  }
-		  float refClock = TIMCLOCK /(PRESCALAR);
-		  frequency = refClock/Difference;
-		  buffer[i++] = frequency;
-		  while(i > ARRAY_SIZE);
-		  TIM5->SR &= ~TIM_SR_CC4IF;
-		  Is_First_Captured = 0;
-	  }
-  }
+			}
+			float refClock = TIMCLOCK /(PRESCALAR);
+			frequency = 26 * refClock/Difference;
+			buffer[i++] = frequency;
+			while(i > ARRAY_SIZE);
+			TIM5->SR &= ~TIM_SR_CC4IF;
+			Is_First_Captured = 0;
+		}
+	}
 }
 
 
 int main(void)
 {
-  TIM3_CH1_IC_Init();
+  TIM3_CH1_CH2_IC_Init();
   configureGPIOA6();
+  configureGPIOA7();
+
 
   TIM5_CH1_IC_Init();
   configureGPIOA0(); //AF2 Alternate function
